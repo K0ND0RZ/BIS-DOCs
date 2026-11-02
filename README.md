@@ -126,11 +126,17 @@ The generated title, localized slug, DOC filename, and publication commit event 
 
 ## Authentication layers
 
-**Telegram** — `/block` and `/file` operations are accepted in the designated supergroup topics from Telegram administrators.
+BIS uses separate authentication mechanisms for Telegram, OpenAI, GitHub publication, GitHub SSH access, and local Git commit signing.
 
-**OpenAI** — Patrick Blue and Patrick Red access OpenAI through private BIS API credentials. The Vector Store is private.
+**Telegram** — Patrick Blue authenticates with `BLUE_BOT_TOKEN` and Patrick Red with `RED_BOT_TOKEN`. Both are Telegram Bot API tokens. The designated supergroup, topic ID, and administrator status define where authorized `/block` and `/file` operations are accepted.
 
-**GitHub** — Patrick Red publishes through a fine-grained credential restricted to the `BIS-DOCs` repository. Published DOCs are publicly readable.
+**OpenAI** — BIS authenticates with `OPENAI_API_KEY`, an OpenAI secret API key. `OPENAI_VECTOR_STORE_ID` is the `vs_...` resource identifier of the private Vector Store used for semantic retrieval and DOC generation.
+
+**GitHub publication** — Patrick Red authenticates to the GitHub REST API with `GITHUB_TOKEN`, a fine-grained Personal Access Token restricted to the `BIS-DOCs` repository with Contents read/write permission. This credential is used when generated DOC files and their publication commits are created.
+
+**GitHub SSH** — local Git operations use an Ed25519 SSH key pair. `id_ed25519` is the private authentication key stored on the local machine, and `id_ed25519.pub` is its public counterpart registered with GitHub. This key pair is used for clone, pull, and push operations.
+
+**Git commit signing** — local commits are signed with an OpenPGP/GPG signing key pair. The private GPG key creates the commit signature and is protected by the GPG signing passphrase. The public GPG key is registered with GitHub for signature verification. Git identifies the active signing key through `user.signingkey`, using the GPG Key ID; the full GPG fingerprint provides its unique cryptographic identity.
 
 ## Software chain
 
