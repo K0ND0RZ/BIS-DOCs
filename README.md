@@ -126,7 +126,7 @@ The generated title, localized slug, DOC filename, and publication commit event 
 
 ## Authentication layers
 
-BIS uses separate authentication mechanisms for Telegram, OpenAI, GitHub publication, GitHub SSH access, and local Git commit signing.
+BIS uses separate authentication mechanisms for Telegram, OpenAI, GitHub publication, GitHub SSH access, VPS SSH access, and local Git commit signing.
 
 **Telegram** — Patrick Blue authenticates with `BLUE_BOT_TOKEN` and Patrick Red with `RED_BOT_TOKEN`. Both are Telegram Bot API tokens. The designated supergroup, topic ID, and administrator status define where authorized `/block` and `/file` operations are accepted.
 
@@ -135,6 +135,8 @@ BIS uses separate authentication mechanisms for Telegram, OpenAI, GitHub publica
 **GitHub publication** — Patrick Red authenticates to the GitHub REST API with `GITHUB_TOKEN`, a fine-grained Personal Access Token restricted to the `BIS-DOCs` repository with Contents read/write permission. This credential is used when generated DOC files and their publication commits are created.
 
 **GitHub SSH** — local Git operations use an Ed25519 SSH key pair. `id_ed25519` is the private authentication key stored on the local machine, and `id_ed25519.pub` is its public counterpart registered with GitHub. This key pair is used for clone, pull, and push operations.
+
+**VPS SSH** — The Hetzner Ubuntu server (`bis-vps`) uses an Ed25519 SSH key pair: `~/.ssh/bis_vps_ed25519` remains on the administrator’s machine, and its public key authorizes VPS access. The `patrik` account administers the server through `sudo`; the `bis` account runs `bis-blue` and `bis-red` as automatically restarted `systemd` services. SSH password authentication and direct root SSH login are disabled.
 
 **Git commit signing** — local commits are signed with an OpenPGP/GPG signing key pair. The private GPG key creates the commit signature and is protected by the GPG signing passphrase. The public GPG key is registered with GitHub for signature verification. Git identifies the active signing key through `user.signingkey`, using the GPG Key ID; the full GPG fingerprint provides its unique cryptographic identity.
 
@@ -155,6 +157,6 @@ Public DOC link returned to Telegram
 ```
 
 **Telegram** — operational interface.  
-**Local storage** — canonical semantic memory.  
+**Local storage** — canonical semantic memory on the VPS filesystem.  
 **OpenAI** — semantic retrieval and contextual integration.  
 **GitHub** — durable public publication and version history for generated DOCs.
